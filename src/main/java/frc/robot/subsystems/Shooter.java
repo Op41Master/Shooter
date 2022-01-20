@@ -21,7 +21,7 @@ public class Shooter extends SubsystemBase {
 private double shooterSpeed = 0.5;
 private double aimerSpeed = 0.5;
 //make sure we have the right motors for falcon
-private TalonFX rightShooter, leftShooter;
+private TalonFX rightShooterMotor, leftShooterMotor;
 private CANSparkMax neoAimer; /**maybe neo aimer*/
 private Encoder lEncoder, rEncoder;
 
@@ -30,8 +30,8 @@ private Encoder lEncoder, rEncoder;
 // **********************************************
 
 public Shooter(){
-    leftShooter = new TalonFX(1); //need can id
-    rightShooter = new TalonFX(2); // need can id make make one backwards
+    leftShooterMotor = new TalonFX(1); //need can id
+    rightShooterMotor = new TalonFX(2); // need can id make make one backwards
     lEncoder = new Encoder(0, 1); // need channels from electrical
     rEncoder = new Encoder(2, 3); // need channels from electrical
     neoAimer = new CANSparkMax(0, MotorType.kBrushless); // need id from elecectrical 
@@ -44,29 +44,33 @@ public Shooter(){
 // **********************************************
 
 //all three motions I think are needed for shooter so far
-    public void forward(){
+    public void activateShooter(){
         // todo:make speed variable
-        leftShooter.set(ControlMode.PercentOutput, shooterSpeed);
-      rightShooter.set(ControlMode.PercentOutput, -shooterSpeed); //check
+       leftShooterMotor.set(ControlMode.PercentOutput, shooterSpeed);
+       rightShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed); //check
       
     }
 
-    public void backwards(){
-        leftShooter.set(ControlMode.PercentOutput, -shooterSpeed);
-        rightShooter.set(ControlMode.PercentOutput, shooterSpeed); 
+    public void reverseShooter(){
+        leftShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed);
+        rightShooterMotor.set(ControlMode.PercentOutput, shooterSpeed); 
     }
 
-    public void aimerBack(){
+    public void aimerDown(){
         neoAimer.set(-aimerSpeed);
     }
 
-    public void aimerForward(){
+    public void aimerUp(){
         neoAimer.set(aimerSpeed);
     }
 
-    public void stop(){
-        leftShooter.set(ControlMode.PercentOutput, 0);
-        rightShooter.set(ControlMode.PercentOutput, 0); 
+    public void stopShooter(){
+        leftShooterMotor.set(ControlMode.PercentOutput, 0);
+        rightShooterMotor.set(ControlMode.PercentOutput, 0); 
+    }
+
+    public void stopAimer (){
+        neoAimer.set(0);
     }
 
     @Override

@@ -7,11 +7,17 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ShooterCommands.CommandActivateShooter;
+import frc.robot.commands.ShooterCommands.CommandReverseShooter;
+import frc.robot.commands.ShooterCommands.CommandStopShooter;
+import frc.robot.commands.ShooterCommands.CommandAimerUp;
+import frc.robot.commands.ShooterCommands.CommandStopAimer;
+import frc.robot.commands.ShooterCommands.CommandAimerDown;
+
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,11 +29,19 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private XboxController xboxController = new XboxController(0);
-  private JoystickButton ltButton = new JoystickButton(xboxController, XboxController.Button.kLeftBumper.value);
-  private JoystickButton rtButton = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
-  private JoystickButton leftJoystick = new JoystickButton(xboxController, XboxController.Button.kLeftStick.value);
+  private JoystickButton rightBumper = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
+  private JoystickButton rightTrigger = new JoystickButton(xboxController, XboxController.Axis.kRightTrigger.value);
+  private JoystickButton aButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
+  private JoystickButton yButton = new JoystickButton(xboxController, XboxController.Button.kY.value);
+  private Shooter shooter;
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final CommandActivateShooter commandActivateShooter = new CommandActivateShooter(shooter);
+  private final CommandStopShooter commandStopShooter = new CommandStopShooter(shooter);
+  private final CommandReverseShooter commandReverseShooter = new CommandReverseShooter(shooter);
+  private final CommandAimerUp commandAimerUp = new CommandAimerUp(shooter);
+  private final CommandAimerDown commandAimerDown = new CommandAimerDown(shooter);
+  private final CommandStopAimer commandStopAimer = new CommandStopAimer(shooter);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -42,13 +56,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
-    /*
-    ltButton.whileHeld(Shooter.forward);
-          .whenReleased();
-    rtButton.whileHeld()
-          .whenReleased();
-    */
+      rightBumper.whileHeld(commandReverseShooter)
+                 .whenReleased(commandStopShooter);
+      aButton.whenPressed(commandAimerDown)
+             .whenReleased(commandStopAimer);
+      yButton.whenPressed(commandAimerUp)
+             .whenReleased(commandStopAimer);
+      rightTrigger.whileHeld(commandActivateShooter)
+                  .whenReleased(commandStopShooter);
+    
   }
 
   /**
