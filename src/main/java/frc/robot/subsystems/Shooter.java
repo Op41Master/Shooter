@@ -14,7 +14,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 // Class Variables
 // **********************************************
 
-public class Shooter extends SubsystemBase {
 // **********************************************
 // Instance Variables
 // **********************************************
