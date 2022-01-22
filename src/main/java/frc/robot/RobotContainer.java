@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+// imports for commands
 import frc.robot.commands.ShooterCommands.CommandActivateShooter;
 import frc.robot.commands.ShooterCommands.CommandReverseShooter;
 import frc.robot.commands.ShooterCommands.CommandStopShooter;
@@ -29,16 +30,20 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+
+  // button inputs
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private XboxController xboxController = new XboxController(0);
-  private JoystickButton rightBumper = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
-  private JoystickButton rightTrigger = new JoystickButton(xboxController, XboxController.Axis.kRightTrigger.value);
-  private JoystickButton aButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
-  private JoystickButton yButton = new JoystickButton(xboxController, XboxController.Button.kY.value);
-  private JoystickButton xButton = new JoystickButton(xboxController, XboxController.Button.kX.value);
-  private JoystickButton bButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
+  private final XboxController xboxController = new XboxController(0);
+  private final JoystickButton rightBumper = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
+  private final JoystickButton rightTrigger = new JoystickButton(xboxController, XboxController.Axis.kRightTrigger.value);
+  private final JoystickButton aButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
+  private final JoystickButton yButton = new JoystickButton(xboxController, XboxController.Button.kY.value);
+  // double check that these buttons don't overlap with other systems
+  private final JoystickButton xButton = new JoystickButton(xboxController, XboxController.Button.kX.value);
+  private final JoystickButton bButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
   private Shooter shooter;
 
+  // commands
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final CommandActivateShooter commandActivateShooter = new CommandActivateShooter(shooter);
   private final CommandStopShooter commandStopShooter = new CommandStopShooter(shooter);
@@ -63,14 +68,17 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     //todo makesure variables dont overlap
+    // shooter:
       rightBumper.whileHeld(commandReverseShooter)
                  .whenReleased(commandStopShooter);
+      rightTrigger.whileHeld(commandActivateShooter)
+                  .whenReleased(commandStopShooter);
+    // Aimer
       aButton.whenPressed(commandAimerDown)
              .whenReleased(commandStopAimer);
       yButton.whenPressed(commandAimerUp)
              .whenReleased(commandStopAimer);
-      rightTrigger.whileHeld(commandActivateShooter)
-                  .whenReleased(commandStopShooter);
+    // Speed for shooter
       xButton.whenPressed(commandIncreaseSpeed);
       bButton.whenPressed(CommandDecreaseSpeed);
     

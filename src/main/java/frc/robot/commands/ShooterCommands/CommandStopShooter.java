@@ -6,7 +6,7 @@ import frc.robot.subsystems.Shooter;
 /** An example command that uses an example subsystem. */
 public class CommandStopShooter extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Shooter stopShooter;
+  private final Shooter shooter;
   
 
   /**
@@ -15,9 +15,9 @@ public class CommandStopShooter extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public CommandStopShooter(Shooter shooter) {
-    stopShooter = shooter;
+    this.shooter = shooter;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(stopShooter);
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -29,7 +29,7 @@ public class CommandStopShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        stopShooter.stopShooter();
+    shooter.stopShooter();
   }
 
   // Called once the command ends or is interrupted.

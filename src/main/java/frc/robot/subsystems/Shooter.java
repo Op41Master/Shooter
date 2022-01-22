@@ -21,6 +21,7 @@ public class Shooter extends SubsystemBase {
 // **********************************************
 // Instance Variables
 // **********************************************
+
 private double shooterSpeed = 0.5;
 private double aimerSpeed = 0.5;
 //make sure we have the right motors for falcon
