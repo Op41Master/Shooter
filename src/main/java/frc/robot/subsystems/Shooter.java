@@ -11,6 +11,10 @@ import com.ctre.phoenix.motorcontrol.*;
 //import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+public class Shooter extends SubsystemBase {
+
+// **********************************************
 // Class Variables
 // **********************************************
 
@@ -49,6 +53,17 @@ public Shooter(){
        rightShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed); //check
       
     }
+
+    public void increaseSpeed(double speedInterval){
+        speedInterval = 0.05;
+        shooterSpeed += speedInterval;
+    }
+
+    public void decreaseSpeed(double speedInterval){
+        speedInterval = 0.05;
+        shooterSpeed -= speedInterval;
+    }
+
 
     public void reverseShooter(){
         leftShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed);

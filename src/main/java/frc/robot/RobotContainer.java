@@ -13,6 +13,8 @@ import frc.robot.commands.ShooterCommands.CommandStopShooter;
 import frc.robot.commands.ShooterCommands.CommandAimerUp;
 import frc.robot.commands.ShooterCommands.CommandStopAimer;
 import frc.robot.commands.ShooterCommands.CommandAimerDown;
+import frc.robot.commands.ShooterCommands.CommandIncreaseSpeed;
+import frc.robot.commands.ShooterCommands.CommandDecreaseSpeed;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
@@ -33,6 +35,8 @@ public class RobotContainer {
   private JoystickButton rightTrigger = new JoystickButton(xboxController, XboxController.Axis.kRightTrigger.value);
   private JoystickButton aButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
   private JoystickButton yButton = new JoystickButton(xboxController, XboxController.Button.kY.value);
+  private JoystickButton xButton = new JoystickButton(xboxController, XboxController.Button.kX.value);
+  private JoystickButton bButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
   private Shooter shooter;
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
@@ -42,6 +46,8 @@ public class RobotContainer {
   private final CommandAimerUp commandAimerUp = new CommandAimerUp(shooter);
   private final CommandAimerDown commandAimerDown = new CommandAimerDown(shooter);
   private final CommandStopAimer commandStopAimer = new CommandStopAimer(shooter);
+  private final CommandIncreaseSpeed commandIncreaseSpeed = new CommandIncreaseSpeed(shooter);
+  private final CommandDecreaseSpeed CommandDecreaseSpeed = new CommandDecreaseSpeed(shooter);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -56,6 +62,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //todo makesure variables dont overlap
       rightBumper.whileHeld(commandReverseShooter)
                  .whenReleased(commandStopShooter);
       aButton.whenPressed(commandAimerDown)
@@ -64,6 +71,8 @@ public class RobotContainer {
              .whenReleased(commandStopAimer);
       rightTrigger.whileHeld(commandActivateShooter)
                   .whenReleased(commandStopShooter);
+      xButton.whenPressed(commandIncreaseSpeed);
+      bButton.whenPressed(CommandDecreaseSpeed);
     
   }
 
