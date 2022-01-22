@@ -30,6 +30,7 @@ public class CommandAimerDown extends CommandBase {
   @Override
   public void execute() {
     shooter.aimerDown();
+    System.out.println(this.getClass().getSimpleName());
   }
 
   // Called once the command ends or is interrupted.

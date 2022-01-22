@@ -30,6 +30,7 @@ public class CommandActivateShooter extends CommandBase {
   @Override
   public void execute() {
         shooter.activateShooter();
+        System.out.println(this.getClass().getSimpleName());
   }
 
   // Called once the command ends or is interrupted.

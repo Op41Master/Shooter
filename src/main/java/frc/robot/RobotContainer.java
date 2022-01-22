@@ -32,16 +32,18 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   // button inputs
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final XboxController xboxController = new XboxController(0);
   private final JoystickButton rightBumper = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
-  private final JoystickButton rightTrigger = new JoystickButton(xboxController, XboxController.Axis.kRightTrigger.value);
   private final JoystickButton aButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
   private final JoystickButton yButton = new JoystickButton(xboxController, XboxController.Button.kY.value);
   // double check that these buttons don't overlap with other systems
   private final JoystickButton xButton = new JoystickButton(xboxController, XboxController.Button.kX.value);
   private final JoystickButton bButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
-  private Shooter shooter;
+  // triggers
+  private final JoystickButton leftBumper = new JoystickButton(xboxController, XboxController.Button.kLeftBumper.value);
+  //private final JoystickButton rightTrigger = new JoystickButton(xboxController, XboxController.Axis.kRightTrigger.value);
+  private Shooter shooter = new Shooter();
 
   // commands
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
@@ -60,6 +62,7 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
+
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -67,11 +70,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //todo makesure variables dont overlap
-    // shooter:
+    // todo makesure variables dont overlap
+    // Shooter:
       rightBumper.whileHeld(commandReverseShooter)
                  .whenReleased(commandStopShooter);
-      rightTrigger.whileHeld(commandActivateShooter)
+      leftBumper.whileHeld(commandActivateShooter)
                   .whenReleased(commandStopShooter);
     // Aimer
       aButton.whenPressed(commandAimerDown)

@@ -29,7 +29,8 @@ public class CommandIncreaseSpeed extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.stopShooter();
+    shooter.increaseSpeed();
+    System.out.println(this.getClass().getSimpleName());
   }
 
   // Called once the command ends or is interrupted.

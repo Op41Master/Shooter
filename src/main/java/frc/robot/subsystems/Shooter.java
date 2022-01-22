@@ -28,6 +28,7 @@ private double aimerSpeed = 0.5;
 private TalonFX rightShooterMotor, leftShooterMotor;
 private CANSparkMax neoAimer; /**maybe neo aimer*/
 private Encoder lEncoder, rEncoder;
+private double speedInterval = 0.05;
 
 // **********************************************
 // Constructors
@@ -55,13 +56,11 @@ public Shooter(){
       
     }
 
-    public void increaseSpeed(double speedInterval){
-        speedInterval = 0.05;
+    public void increaseSpeed(){
         shooterSpeed += speedInterval;
     }
 
-    public void decreaseSpeed(double speedInterval){
-        speedInterval = 0.05;
+    public void decreaseSpeed(){
         shooterSpeed -= speedInterval;
     }
 

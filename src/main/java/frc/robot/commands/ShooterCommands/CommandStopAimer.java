@@ -30,6 +30,7 @@ public class CommandStopAimer extends CommandBase {
   @Override
   public void execute() {
     shooter.stopAimer();
+    System.out.println(this.getClass().getSimpleName());
   }
 
   // Called once the command ends or is interrupted.
