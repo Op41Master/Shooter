@@ -32,7 +32,7 @@ private double aimerSpeed = 0.5;
 //private TalonFX rightShooterMotor;
 private TalonFX leftShooterMotor;
 private CANSparkMax neoAimer; /**maybe neo aimer*/
-private Encoder lEncoder, rEncoder;
+//private Encoder lEncoder, rEncoder;
 private double speedInterval = 0.05;
 public NetworkTable shooterTable = NetworkTableInstance.getDefault().getTable(this.getClass().getSimpleName()); // shooter speed
     public NetworkTableEntry entryShooterPercentage = shooterTable.getEntry("Shooter speed"); //shooter speed in % form
