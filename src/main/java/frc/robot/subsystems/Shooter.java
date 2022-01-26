@@ -61,7 +61,7 @@ public Shooter(){
 //all three motions I think are needed for shooter so far
     public void activateShooter(){
         // todo:make speed variable
-       leftShooterMotor.set(ControlMode.PercentOutput, shooterSpeed);
+       leftShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed);
        //rightShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed); //check
       
     }
@@ -85,7 +85,7 @@ public Shooter(){
 
 
     public void reverseShooter(){
-        leftShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed);
+        leftShooterMotor.set(ControlMode.PercentOutput, shooterSpeed);
         //rightShooterMotor.set(ControlMode.PercentOutput, shooterSpeed); 
     }
 
