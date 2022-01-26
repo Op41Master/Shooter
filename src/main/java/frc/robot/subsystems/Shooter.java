@@ -4,6 +4,10 @@ import com.revrobotics.CANSparkMax;
 //import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,12 +27,17 @@ public class Shooter extends SubsystemBase {
 // **********************************************
 
 private double shooterSpeed = 0.5;
+private double shooterPercent;
 private double aimerSpeed = 0.5;
 //make sure we have the right motors for falcon
 private TalonFX rightShooterMotor, leftShooterMotor;
 private CANSparkMax neoAimer; /**maybe neo aimer*/
 private Encoder lEncoder, rEncoder;
 private double speedInterval = 0.05;
+public NetworkTable shooterTable = NetworkTableInstance.getDefault().getTable(this.getClass().getSimpleName()); // shooter speed
+    public NetworkTableEntry entryShooterPercentage = shooterTable.getEntry("Shooter speed"); //shooter speed in % form
+    public NetworkTableEntry entryShooterSpeed = shooterTable.getEntry("Shooter speed"); //shooter speed in % form
+
 
 // **********************************************
 // Constructors
@@ -58,10 +67,26 @@ public Shooter(){
 
     public void increaseSpeed(){
         shooterSpeed += speedInterval;
+        if (shooterSpeed >= 1){
+            shooterSpeed = 1;
+        } else if (shooterSpeed <= 0){
+            shooterSpeed = 0;
+        }
+        // System.out.println("shooter is at " + shooterPercent + "% power");
+        shooterPercent = shooterSpeed * 100;
+        entryShooterSpeed.setDouble(shooterSpeed);
+        entryShooterPercentage.setDouble(shooterPercent);
     }
-
     public void decreaseSpeed(){
         shooterSpeed -= speedInterval;
+        if (shooterSpeed >= 1){
+            shooterSpeed = 1;
+        } else if (shooterSpeed <= 0){
+            shooterSpeed = 0;
+        }
+        shooterPercent = shooterSpeed * 100;
+        entryShooterSpeed.setDouble(shooterSpeed);
+        entryShooterPercentage.setDouble(shooterPercent);
     }
 
 
