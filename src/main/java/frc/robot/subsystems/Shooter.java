@@ -35,8 +35,8 @@ private CANSparkMax neoAimer; /**maybe neo aimer*/
 //private Encoder lEncoder, rEncoder;
 private double speedInterval = 0.05;
 public NetworkTable shooterTable = NetworkTableInstance.getDefault().getTable(this.getClass().getSimpleName()); // shooter speed
-    public NetworkTableEntry entryShooterPercentage = shooterTable.getEntry("Shooter speed"); //shooter speed in % form
-    public NetworkTableEntry entryShooterSpeed = shooterTable.getEntry("Shooter speed"); //shooter speed in % form
+    public NetworkTableEntry entryShooterPercentage = shooterTable.getEntry("Shooter percentage"); //shooter speed in % form
+    public NetworkTableEntry entryShooterSpeed = shooterTable.getEntry("Shooter speed"); //shooter speed
 
 
 // **********************************************
@@ -73,9 +73,6 @@ public Shooter(){
         } else if (shooterSpeed <= 0){
             shooterSpeed = 0;
         }
-        shooterPercent = shooterSpeed * 100;
-        entryShooterSpeed.setDouble(shooterSpeed);
-        entryShooterPercentage.setDouble(shooterPercent);
     }
     public void decreaseSpeed(){
         shooterSpeed -= speedInterval;
@@ -83,10 +80,7 @@ public Shooter(){
             shooterSpeed = 1;
         } else if (shooterSpeed <= 0){
             shooterSpeed = speedInterval;
-        }
-        shooterPercent = shooterSpeed * 100;
-        entryShooterSpeed.setDouble(shooterSpeed);
-        entryShooterPercentage.setDouble(shooterPercent);
+        }        
     }
 
 
@@ -114,8 +108,9 @@ public Shooter(){
 
     @Override
     public void periodic() {
-        // TODO Auto-generated method stub
-        super.periodic();
+        shooterPercent = shooterSpeed * 100;
+        entryShooterSpeed.setDouble(shooterSpeed);
+        entryShooterPercentage.setDouble(shooterPercent);
     }
 
     @Override
@@ -126,8 +121,9 @@ public Shooter(){
 
     @Override
     public void simulationPeriodic() {
-        // TODO Auto-generated method stub
-        super.simulationPeriodic();
+        shooterPercent = shooterSpeed * 100;
+        entryShooterSpeed.setDouble(shooterSpeed);
+        entryShooterPercentage.setDouble(shooterPercent);
     }
     
 } 
