@@ -47,8 +47,8 @@ public Shooter(){
     //todo change this depending on the robot
     leftShooterMotor = new TalonFX(5); //need can id
     //rightShooterMotor = new TalonFX(2); // need can id make make one backwards
-    lEncoder = new Encoder(0, 1); // need channels from electrical
-    rEncoder = new Encoder(2, 3); // need channels from electrical
+    //lEncoder = new Encoder(0, 1); // need channels from electrical
+    //rEncoder = new Encoder(2, 3); // need channels from electrical
     neoAimer = new CANSparkMax(0, MotorType.kBrushless); // need id from elecectrical 
 }
 
