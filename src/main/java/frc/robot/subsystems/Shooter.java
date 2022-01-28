@@ -7,7 +7,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.*;
@@ -29,14 +28,16 @@ private double shooterSpeed = 0.5;
 private double shooterPercent;
 private double aimerSpeed = 0.5;
 //make sure we have the right motors for falcon
-//private TalonFX rightShooterMotor;
 private TalonFX leftShooterMotor;
+private TalonFX rightShooterMotor;
 private CANSparkMax neoAimer; /**maybe neo aimer*/
 //private Encoder lEncoder, rEncoder;
 private double speedInterval = 0.05;
 public NetworkTable shooterTable = NetworkTableInstance.getDefault().getTable(this.getClass().getSimpleName()); // shooter speed
     public NetworkTableEntry entryShooterPercentage = shooterTable.getEntry("Shooter percentage"); //shooter speed in % form
     public NetworkTableEntry entryShooterSpeed = shooterTable.getEntry("Shooter speed"); //shooter speed
+    public NetworkTableEntry entryLeftShooterVelocity = shooterTable.getEntry("Left Shooter Velocity"); //shooter rpm
+    public NetworkTableEntry entryRightShooterVelocity = shooterTable.getEntry("Right Shooter Velocity"); //shooter rpm
 
 
 // **********************************************
@@ -46,7 +47,7 @@ public NetworkTable shooterTable = NetworkTableInstance.getDefault().getTable(th
 public Shooter(){
     //todo change this depending on the robot
     leftShooterMotor = new TalonFX(5); //need can id
-    //rightShooterMotor = new TalonFX(2); // need can id make make one backwards
+    rightShooterMotor = new TalonFX(2); // need can id make make one backwards
     //lEncoder = new Encoder(0, 1); // need channels from electrical
     //rEncoder = new Encoder(2, 3); // need channels from electrical
     neoAimer = new CANSparkMax(0, MotorType.kBrushless); // need id from elecectrical 
@@ -62,7 +63,7 @@ public Shooter(){
     public void activateShooter(){
         // todo:make speed variable
        leftShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed);
-       //rightShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed); //check
+       rightShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed); //check
       
     }
 
@@ -86,7 +87,7 @@ public Shooter(){
 
     public void reverseShooter(){
         leftShooterMotor.set(ControlMode.PercentOutput, shooterSpeed);
-        //rightShooterMotor.set(ControlMode.PercentOutput, shooterSpeed); 
+        rightShooterMotor.set(ControlMode.PercentOutput, shooterSpeed); 
     }
 
     public void aimerDown(){
@@ -99,7 +100,7 @@ public Shooter(){
 
     public void stopShooter(){
         leftShooterMotor.set(ControlMode.PercentOutput, 0);
-        //rightShooterMotor.set(ControlMode.PercentOutput, 0); 
+        rightShooterMotor.set(ControlMode.PercentOutput, 0); 
     }
 
     public void stopAimer (){
@@ -111,6 +112,8 @@ public Shooter(){
         shooterPercent = shooterSpeed * 100;
         entryShooterSpeed.setDouble(shooterSpeed);
         entryShooterPercentage.setDouble(shooterPercent);
+        entryLeftShooterVelocity.setDouble(rightShooterMotor.getSelectedSensorVelocity());
+        entryRightShooterVelocity.setDouble(leftShooterMotor.getSelectedSensorVelocity());
     }
 
     @Override
@@ -124,6 +127,8 @@ public Shooter(){
         shooterPercent = shooterSpeed * 100;
         entryShooterSpeed.setDouble(shooterSpeed);
         entryShooterPercentage.setDouble(shooterPercent);
+        entryLeftShooterVelocity.setDouble(rightShooterMotor.getSelectedSensorVelocity());
+        entryRightShooterVelocity.setDouble(leftShooterMotor.getSelectedSensorVelocity());
     }
     
 } 
