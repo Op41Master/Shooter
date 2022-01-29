@@ -72,18 +72,18 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // todo makesure variables dont overlap
     // Shooter:
-      rightBumper.whileHeld(commandReverseShooter)
-                 .whenReleased(commandStopShooter);
-      leftBumper.whileHeld(commandActivateShooter)
-                  .whenReleased(commandStopShooter);
-    // Aimer
-      aButton.whenPressed(commandAimerDown)
-             .whenReleased(commandStopAimer);
-      yButton.whenPressed(commandAimerUp)
-             .whenReleased(commandStopAimer);
-    // Speed for shooter
-      xButton.whenPressed(commandIncreaseSpeed);
-      bButton.whenPressed(CommandDecreaseSpeed);
+    //   rightBumper.whileHeld(commandReverseShooter)
+    //              .whenReleased(commandStopShooter);
+    //   leftBumper.whileHeld(commandActivateShooter)
+    //               .whenReleased(commandStopShooter);
+    // // Aimer
+    //   aButton.whenPressed(commandAimerDown)
+    //          .whenReleased(commandStopAimer);
+    //   yButton.whenPressed(commandAimerUp)
+    //          .whenReleased(commandStopAimer);
+    // // Speed for shooter
+    //   xButton.whenPressed(commandIncreaseSpeed);
+    //   bButton.whenPressed(CommandDecreaseSpeed);
     
   }
 
