@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 //import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,6 +18,7 @@ import com.ctre.phoenix.motorcontrol.*;
 //import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXPIDSetConfiguration;
 
 
 public class Shooter extends SubsystemBase {
@@ -48,6 +50,10 @@ private double shooterSpeed = 0.5;
 private double shooterPercentage;
 private double speedInterval = 0.05;
 
+private double kP = 0.15;
+private double kI = 0.001;
+
+
 private double aimerSpeed = 0.5;
 //make sure we have the right motors for falcon
 private TalonFX leftShooterMotor;
@@ -62,12 +68,20 @@ private int loops;
 private CANSparkMax neoAimer; /**maybe neo aimer*/
 
 public NetworkTable shooterTable = NetworkTableInstance.getDefault().getTable(this.getClass().getSimpleName()); // shooter speed
-    public NetworkTableEntry entryShooterPercentage = shooterTable.getEntry("Shooter percentage"); //shooter speed in % form
-    public NetworkTableEntry entryShooterSpeed = shooterTable.getEntry("Shooter speed"); //shooter speed
-    public NetworkTableEntry entryLeftShooterVelocity = shooterTable.getEntry("Left Shooter Velocity"); //shooter speed
-    public NetworkTableEntry entryRightShooterVelocity = shooterTable.getEntry("Right Shooter Velocity"); //shooter speed
-    public NetworkTableEntry entryAverageShooterVelocity = shooterTable.getEntry("Average Shooter Velocity"); //shooter velocity
-
+public NetworkTableEntry entryShooterPercentage = shooterTable.getEntry("Shooter percentage"); //shooter speed in % form
+public NetworkTableEntry entryShooterSpeed = shooterTable.getEntry("Shooter speed"); //shooter speed
+public NetworkTableEntry entryLeftShooterVelocity = shooterTable.getEntry("Left Shooter Velocity"); //shooter speed
+public NetworkTableEntry entryRightShooterVelocity = shooterTable.getEntry("Right Shooter Velocity"); //shooter speed
+public NetworkTableEntry entryAverageShooterVelocity = shooterTable.getEntry("Average Shooter Velocity"); //shooter velocity
+public NetworkTableEntry entryLeftMotorSupplyCurrent = shooterTable.getEntry("Left Motor Supply Current Draw"); //shooter velocity
+public NetworkTableEntry entryLeftMotorStatorCurrent = shooterTable.getEntry("Left Motor Stator Current Draw"); //shooter velocity
+public NetworkTableEntry entryLeftMotorVelocityError = shooterTable.getEntry("Left Motor Velocity Error"); //shooter velocity
+public NetworkTableEntry entryLeftMotorTargetVelocity = shooterTable.getEntry("Left Motor Target Velocity (clicks/100ms)"); //shooter velocity
+public NetworkTableEntry entryF = shooterTable.getEntry("F coeficient"); //shooter velocity
+public NetworkTableEntry entryP = shooterTable.getEntry("P coeficient"); //shooter velocity
+public NetworkTableEntry entryI = shooterTable.getEntry("I coeficient"); //shooter velocity
+public NetworkTableEntry entryD = shooterTable.getEntry("D coeficient"); //shooter velocity
+ 
 // **********************************************
 // Constructors
 // **********************************************
@@ -79,34 +93,51 @@ public Shooter(){
     //lEncoder = new Encoder(0, 1); // need channels from electrical
     //rEncoder = new Encoder(2, 3); // need channels from electrical
     neoAimer = new CANSparkMax(0, MotorType.kBrushless); // need id from elecectrical 
-    leftShooterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
+    leftShooterMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 30);
     leftShooterMotor.setSensorPhase(true);
     leftShooterMotor.configNominalOutputForward(0, 30);
     leftShooterMotor.configPeakOutputForward(1, 30);
     leftShooterMotor.configNominalOutputReverse(0, 30);
     leftShooterMotor.configPeakOutputReverse(-1, 30);
 
-    leftShooterMotor.config_kP(0, 0.25, 30);
-    leftShooterMotor.config_kI(0, 0.001, 30);
-    leftShooterMotor.config_kD(0, 20, 30);
-    leftShooterMotor.config_kF(0, 1023.0/7200, 30);
+    leftShooterMotor.config_kP(0, kP, 30);
+    leftShooterMotor.config_kI(0, kI, 30);
+    leftShooterMotor.config_kD(0, 0, 30);
+    leftShooterMotor.config_kF(0, 0, 30);
 
-    rightShooterMotor.setInverted(true);
-    rightShooterMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 30);
-    rightShooterMotor.setSensorPhase(true);
-    rightShooterMotor.configNominalOutputForward(0, 30);
-    rightShooterMotor.configPeakOutputForward(1, 30);
-    rightShooterMotor.configNominalOutputReverse(0, 30);
-    rightShooterMotor.configPeakOutputReverse(-1, 30);
+    //add an entry listener for changed values of "X", the lambda ("->" operator)
+    //defines the code that should run when "X" changes
+    shooterTable.addEntryListener("P coeficient", (table, key, entry, value, flags) -> {
+        kP = value.getDouble();
+        System.out.println(String.format("p changed value: %.2f", kP));
+        leftShooterMotor.config_kP(0, kP, 30);
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-    rightShooterMotor.config_kP(0, 0.25, 30);
-    rightShooterMotor.config_kI(0, 0.001, 30);
-    rightShooterMotor.config_kD(0, 20, 30);
-    rightShooterMotor.config_kF(0, 1023.0/7200, 30);
+    shooterTable.addEntryListener("I coeficient", (table, key, entry, value, flags) -> {
+        kI = value.getDouble();
+        System.out.println(String.format("p changed value: %.2f", kP));
+        leftShooterMotor.config_kI(0, kI, 30);
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+    
+
+    // leftShooterMotor.config_kI(0, 0.001, 30);
+    // leftShooterMotor.config_kD(0, 20, 30);
+    // leftShooterMotor.config_kF(0, 1023.0/7200, 30);
+
+    // rightShooterMotor.setInverted(true);
+    // rightShooterMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 30);
+    // rightShooterMotor.setSensorPhase(true);
+    // rightShooterMotor.configNominalOutputForward(0, 30);
+    // rightShooterMotor.configPeakOutputForward(1, 30);
+    // rightShooterMotor.configNominalOutputReverse(0, 30);
+    // rightShooterMotor.configPeakOutputReverse(-1, 30);
+
+    // rightShooterMotor.config_kP(0, 0.25, 30);
+    // rightShooterMotor.config_kI(0, 0.001, 30);
+    // rightShooterMotor.config_kD(0, 20, 30);
+    // rightShooterMotor.config_kF(0, 1023.0/7200, 30);
 
 }
-
-
 
 
 // **********************************************
@@ -120,7 +151,7 @@ public Shooter(){
        rightShooterMotor.set(ControlMode.Position, velocitySpeed); //check
        
     //    leftShooterMotor.set(ControlMode.PercentOutput, -shooterSpeed);
-    //    rightShooterMotor.set(ControlMode.PercentOutput, shooterSpeed);
+    //    rightShooterMotor.set(ControlMode.PercentOutput, s hooterSpeed);
 
     }
 
@@ -187,7 +218,13 @@ public Shooter(){
         entryLeftShooterVelocity.setDouble(leftShooterMotor.getSelectedSensorVelocity()); //left shooter RPM
         entryRightShooterVelocity.setDouble(rightShooterMotor.getSelectedSensorVelocity()); //right shooter RPM
         entryAverageShooterVelocity.setDouble(averageRPM); //average shooter RPM
-        
+        entryLeftMotorSupplyCurrent.setDouble(leftShooterMotor.getSupplyCurrent());
+        entryLeftMotorStatorCurrent.setDouble(leftShooterMotor.getStatorCurrent());
+        entryLeftMotorVelocityError.setDouble(leftShooterMotor.getClosedLoopError(0));
+        entryLeftMotorTargetVelocity.setDouble(leftShooterMotor.getClosedLoopTarget(0));
+        entryLeftMotorTargetVelocity.setDouble(leftShooterMotor.getClosedLoopTarget(0));
+        entryP.setDouble(kP);
+        entryI.setDouble(kI);
         // //without encoders
         // shooterPercentage = shooterSpeed * 100;
         // entryShooterPercentage.setDouble(shooterPercentage);
@@ -201,23 +238,23 @@ public Shooter(){
         sb.append((int) (motorOutPut * 100));
         sb.append("%");
         sb.append("\tspd");
-        sb.append(leftShooterMotor.getSelectedSensorVelocity(0));
-        sb.append(rightShooterMotor.getSelectedSensorVelocity(0));
+        sb.append(leftShooterMotor.getSelectedSensorVelocity());
+        //sb.append(rightShooterMotor.getSelectedSensorVelocity());
         sb.append("u");
 
         if(xbutton.get()){
-            double targetVelocity_UnitsPer100ms = leftXstick * 500.0 * 4096 / 600;
+            double targetVelocity_UnitsPer100ms = leftXstick * 500.0 * 2048 / 600;
             leftShooterMotor.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
-            rightShooterMotor.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
+            //rightShooterMotor.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
 
             sb.append("\terr: ");
             sb.append(leftShooterMotor.getClosedLoopError(0));
-            sb.append(rightShooterMotor.getClosedLoopError(0));
+            //sb.append(rightShooterMotor.getClosedLoopError(0));
             sb.append("\ttrg: ");
             sb.append(targetVelocity_UnitsPer100ms);
         } else {
             leftShooterMotor.set(ControlMode.PercentOutput, leftXstick);
-            rightShooterMotor.set(ControlMode.PercentOutput, leftXstick);
+            //rightShooterMotor.set(ControlMode.PercentOutput, leftXstick);
         }
 
         if(++loops >= 10){
